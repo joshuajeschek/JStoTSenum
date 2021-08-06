@@ -5,13 +5,17 @@ from util import isInt
 from typing import Dict, List, Union
 
 def saveEnums(dir:str, enums:Dict[str, List[Dict[str, int]]]):
-    for name in enums.keys():
-        with open(join(dir, name + '.ts'), 'a') as f:
-            f.write('// auto generated Enums\n\n')
-            f.write(f'export enum {name} {{\n')
-            for entry in enums[name]:
-                f.write(f'    {entry["key"]} = {entry["value"]},\n')
-            f.write('}\n')
+    with open(join(dir, 'all' + '.ts'), 'a') as a:
+        for name in enums.keys():
+            with open(join(dir, name + '.ts'), 'a') as f:
+                f.write('// auto generated Enums\n\n')
+                f.write(f'export enum {name} {{\n')
+                a.write(f'\nexport enum {name} {{\n')
+                for entry in enums[name]:
+                    f.write(f'    {entry["key"]} = {entry["value"]},\n')
+                    a.write(f'    {entry["key"]} = {entry["value"]},\n')
+                f.write('}\n')
+                a.write('}\n')
 
 
 def getEnums(dir:str) -> Dict[str, List[Union[str, int]]]:
