@@ -4,6 +4,22 @@ from pyjsparser import parse
 from util import isInt
 from typing import Dict, List, Union
 
+def convertConstToTS(js_dir:str, ts_dir:str):
+    files = [f for f in listdir(js_dir) if isfile(join(js_dir, f))]
+    js_files = []
+    for file in files:
+        if file.endswith('.js'):
+            js_files.append(file)
+
+    for js_file in js_files:
+        name = js_file.replace('.js', '')
+        with open(join(js_dir, js_file)) as js_f:
+            with open(join(ts_dir, name + '.d.ts'), 'a') as ts_f:
+                for line in js_f.readlines():
+                    ts_f.write(line.replace('module.exports =', f'declare const {name}:'))
+                ts_f.write('\n')
+                ts_f.write(f'export = {name}\n')
+
 def saveEnums(dir:str, enums:Dict[str, List[Dict[str, int]]]):
     with open(join(dir, 'all' + '.ts'), 'a') as a:
         for name in enums.keys():
